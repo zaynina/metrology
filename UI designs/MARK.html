@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MARK</title>
+  <link href='https://fonts.googleapis.com/css?family=Kaushan Script' rel='stylesheet'>
+  <link href='https://fonts.googleapis.com/css?family=Junge' rel='stylesheet'>
+  <style>
+
+    /* Header */
+
+    body {
+      font-family: Arial, sans-serif; /* default font for the body*/
+      color: black;
+      margin: 0; 
+      padding: 0; 
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      width: 100%;
+      height: 120px;
+      left: 0;
+      top: 0;
+      display: flex;
+      align-items: center;
+      padding: 5px 10px;
+      box-sizing: border-box;
+      border: 1px solid rgb(255, 255, 255);
+      border-radius: 0px 0px 50px 50px;
+      box-shadow: 0px 4px 40px 0px rgba(0, 0, 0, 0.25);
+      background: rgb(196, 196, 196);
+    }
+
+    .logo img {
+      width: 250px;
+      height: 185px;
+    }
+        
+    .tool-name {
+      position: static;
+      color: rgb(0, 0, 0);
+      font-family: Kaushan Script;
+      font-size: 50px;
+      font-weight: 400;
+      line-height: 73px;
+      letter-spacing: 0px;
+      flex-grow: 1;
+    }
+        
+    .nav-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 600px;
+      height: 50px;
+      position: static;
+      margin: 0 auto;
+      background: rgb(0, 0, 0);
+      padding: 0px;
+      border: 1px solid rgb(0, 0, 0);
+      opacity: 1;
+      box-shadow: none;
+    }
+        
+    .nav-button {
+      color: white;
+      font-family: Junge;
+      font-size: 20px;
+      padding: 10px 15px;
+      margin: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      flex-direction: row;
+      text-align: center;
+      user-select: none;
+    }
+        
+    .nav-button:hover {
+      opacity: 0.5;
+    }
+
+    /* Main content area */
+    main {
+      flex-grow: 1;
+      background-color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      font-family: Georgia, serif;
+      user-select: none;
+    }
+
+    .form-row {
+      display: flex;
+      align-items: center;
+      gap: 20px; /* space between select box and button */
+      justify-content: center; /* center horizontally */
+      width: 480px;
+      margin-bottom: 25px;
+    }
+
+    .select-data-container {
+      display: flex;
+      align-items: center;
+      border: 2px solid #000;
+      padding: 5px;
+      background-color: black;
+      box-shadow: none;
+      width: 500px;
+    }
+
+    label {
+      color: white;
+      font-size: 20px;
+      user-select: text;
+      padding-left: 5px;
+      font-family: 'Times New Roman', serif;
+      width: -webkit-fill-available;
+    }
+
+    select {
+      font-size: 15px;
+      height: 30px;
+      background-color: #ccc;
+      border: none;
+      padding: 0 8px;
+      font-family: 'Times New Roman', serif;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      cursor: pointer;
+      outline-offset: -2px;
+      user-select: text;
+      position: relative;
+      width:100%;
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding: 10px 20px;
+      }
+
+      .select-data-container label,
+      select,
+      button {
+        font-size: 14px;
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 10px;
+        width: 300px;
+      }
+
+      .select-data-container {
+        width: 100%;
+        gap: 10px;
+      }
+    }
+        .main-container {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .main-square {
+            width: 1000px;
+            height: 500px;
+            background-color: #c4c4c4;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            position: relative; /* Added yesfor positioning the draft button */
+        }
+        
+        .fields-container {
+            display: flex;
+            gap: 5px;
+            margin: 5px;
+        }
+        
+        .dropdown-column,
+        .input-column{
+            display: flex;
+            flex-direction: column;
+	    padding: 5px;
+	    margin-inline:auto;
+        }
+
+input[type="text"] {
+    width:100%;
+    background-color: #ccc;
+    font-size: 20px;
+    padding: 5px;
+    margin-right: 3px;
+    height: 15px;
+}
+
+        .next-button {
+            position: absolute; /* Positioning the button */
+            bottom: 10px; /* Distance from the bottom */
+            right: 40px; /* Distance from the right */
+            width: 105px;
+            padding: 4px;
+            background-color: #000000;
+            color: white; 
+            font-family: Junge;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background-color 0.3s;
+            box-sizing: border-box;
+            border: 2px solid rgb(0, 0, 0);
+            border-radius: 5px;
+            box-shadow: inset 0px 4px 5px 0px rgba(0, 0, 0, 0.25);
+            background: rgb(0, 0, 0);
+        }
+        
+        .next-button:hover {
+            opacity: 0.8;
+            cursor: pointer;
+        }
+
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">
+      <img src="https://wuest-technology.com/wp-content/uploads/2023/08/infineon_logo_webseite.png" alt="ifx company logo" />
+    </div>
+    <div class="tool-name">METROLOGY TOOLS</div>
+  </div>
+  
+  <div class="nav-bar">
+    <div class="nav-button">DATA</div>
+    <div class="nav-button">APPROVAL LOOP</div>
+    <div class="nav-button">STATISTICS</div>
+    <div class="nav-button">SEARCH</div>
+  </div>
+
+  <main>
+
+   <div class="main-container">
+        <div class="main-square">
+            <div class="fields-container">
+
+   <div class="dropdown-column">
+   	 <form id="siteForm" aria-label="Site selection form">
+     	  <div class="form-row">
+           <div class="select-data-container">
+            <label for="siteSelect">Type</label>
+           <select id="siteSelect" name="siteSelect" aria-required="true">
+            <option value=""> </option>
+            <option value="site1">ABBA Fixed</option>
+            <option value="site2">ABBA Random</option>
+            <option value="site3">AMSA Study</option>
+            <option value="site1">Attributes Study</option>
+            <option value="site2">BIAS Study</option>
+            <option value="site3">Gage Fixed</option>
+            <option value="site1">Gage Random</option>
+            <option value="site2">Grubb Fixed</option>
+            <option value="site3">Grubb Random</option>
+            <option value="site1">Mcard Approach</option>
+            <option value="site2">Matching Fixed</option>
+            <option value="site3">Matching Random</option>
+           </select>
+           </div>
+     	  </div>
+
+      	  <div class="form-row">
+      	   <div class="select-data-container">
+            <label for="siteSelect">Category</label>
+           <select id="siteSelect" name="siteSelect" aria-required="true">
+            <option value=""> </option>
+            <option value="site1">BALL DIAMETER</option>
+            <option value="site2">BALL HEIGHT</option>
+            <option value="site3">BALL SHEAR</option>
+           </select>
+           </div>
+          </div>
+
+      	  <div class="form-row">
+           <div class="select-data-container">
+            <label for="siteSelect">Tools</label>
+           <select id="siteSelect" name="siteSelect" aria-required="true">
+            <option value=""> </option>
+            <option value="site1">HISOMET MEASURE-SCOPE - S030</option>
+            <option value="site2">HISOMET MEASURESCOPE - S057</option>
+            <option value="site3">VISION INSPECTION SYSTEM - VC01</option>
+           </select>
+           </div>
+          </div>
+
+      	  <div class="form-row">
+       	   <div class="select-data-container">
+            <label for="siteSelect">Technology</label>
+           <select id="siteSelect" name="siteSelect" aria-required="true">
+            <option value=""> </option>
+            <option value="site1">ALL DS PACKAGES</option>
+            <option value="site2">ALL LO PACKAGES</option>
+            <option value="site3">ALL DIODES,TRANSISTOR PACKAGES</option>
+           </select>
+           </div>
+      	  </div>
+
+      	  <div class="form-row">
+           <div class="select-data-container">
+            <label for="siteSelect">Process</label>
+           <select id="siteSelect" name="siteSelect" aria-required="true">
+            <option value=""> </option>
+            <option value="site1">ASSEMBLY</option>
+            <option value="site2">DIE BONDING</option>
+            <option value="site3">TESTING</option>
+           </select>
+           </div>
+      	  </div>
+	  
+     	  <div class="form-row">
+           <div class="select-data-container">
+            <label for="siteSelect">Milestone</label>
+           <select id="siteSelect" name="siteSelect" aria-required="true">
+            <option value=""> </option>
+            <option value="site1">Testmile</option>
+            <option value="site2">Testing</option>
+           </select>
+           </div>
+      	  </div>
+
+      	  <div class="form-row">
+           <div class="select-data-container">
+            <label for="siteSelect">Description</label>
+           <input type="text">
+           </div>
+      	  </div>
+	 </form>
+   </div>
+
+   <div class="input-column">
+   	 <form id="siteForm" aria-label="Site selection form">
+
+     	  <div class="form-row">
+           <div class="select-data-container">
+            <label for="siteSelect">LSL</label>
+           <input type="text">
+           </div>
+      	  </div>
+
+     	  <div class="form-row">
+           <div class="select-data-container">
+            <label for="siteSelect">USL</label>
+           <input type="text">
+           </div>
+      	  </div>
+
+     	  <div class="form-row">
+           <div class="select-data-container">
+            <label for="siteSelect">Tolerance</label>
+           <input type="text">
+           </div>
+      	  </div>
+
+     	  <div class="form-row">
+           <div class="select-data-container">
+            <label for="siteSelect">Valid</label>
+           <input type="text">
+            <label for="siteSelect">to</label>
+           <input type="text">
+           </div>
+      	  </div>
+
+     	  <div class="form-row">
+           <div class="select-data-container">
+            <label for="siteSelect">Sigma Process</label>
+           <input type="text">
+           </div>
+      	  </div>
+
+     	  <div class="form-row">
+           <div class="select-data-container">
+            <label for="siteSelect">Date Next Gage</label>
+           <input type="text">
+           </div>
+      	  </div>
+
+
+     	  <div class="form-row">
+           <div class="select-data-container">
+            <label for="siteSelect">Comment</label>
+           <input type="text">
+           </div>
+      	  </div>
+	 </form>
+   </div>
+  </div>
+	 <button class="next-button">Next</button>
+ </div>
+</main>
+
+
+
+  <script>
+
+        // Next button functionality
+        document.querySelector('.next-button').addEventListener('click', function() {
+            alert('Navigate to other pages');
+        });
+
+
+    // Example JS for form submission and basic validation
+    document.getElementById('siteForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const siteSelect = document.getElementById('siteSelect');
+      if (!siteSelect.value) {
+        alert('Please select a site before connecting.');
+        siteSelect.focus();
+        return;
+      }
+      alert('Connecting to ' + siteSelect.options[siteSelect.selectedIndex].text + '...');
+      // Here would be logic to connect or perform your function
+    });
+  </script>
+</body>
+</html>

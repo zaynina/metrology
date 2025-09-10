@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Operators/Trials/Sites Table</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { --gap: 0.75rem; --border:#ddd; --muted:#666; --accent:#0b5; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 1.5rem; }
+    h1 { margin: 0 0 1rem 0; }
+    .row { display: flex; gap: var(--gap); flex-wrap: wrap; align-items: center; }
+    .tabs { display: flex; gap: 0.5rem; margin: 0 0 1rem 0; flex-wrap: wrap; }
+    .tab { border: 1px solid var(--border); border-radius: 999px; padding: 0.35rem 0.75rem; cursor: pointer; background: #f7f7f7; }
+    .tab.active { background: #eafff0; border-color: #9ddfb3; }
+    .tab .close { margin-left: 0.5rem; color: #b00; cursor: pointer; }
+    .controls { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+    button { padding: 0.45rem 0.8rem; cursor: pointer; }
+    .primary { background: var(--accent); color: #fff; border: 1px solid #0a4; border-radius: 6px; }
+    .secondary { background: #eee; border: 1px solid var(--border); border-radius: 6px; }
+    .muted { color: var(--muted); font-size: 0.9rem; }
+    table { border-collapse: collapse; min-width: 500px; }
+    th, td { border: 1px solid var(--border); padding: 0.5rem 0.6rem; text-align: left; }
+    thead th { background: #fafafa; position: relative; }
+    th .name, th[scope="row"] .name { cursor: pointer; }
+    th .actions, th[scope="row"] .actions { display: inline-flex; gap: 0.35rem; margin-left: 0.35rem; opacity: 0.8; }
+    .danger { color: #a00; }
+    .bar { display: flex; gap: 0.5rem; align-items: center; }
+    .spacer { flex: 1; }
+    .panel { border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; margin: 0.75rem 0; }
+    input.inline-edit { width: 100%; padding: 0.2rem 0.3rem; }
+    .footer { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin-top: 1rem; }
+    .small { font-size: 0.85rem; }
+    a.button { text-decoration: none; }
+  </style>
+</head>
+
+<body>
+  <h1>Generated Table</h1>
+  <div class="bar">
+    <div class="tabs" id="tabs"></div>
+    <div class="spacer"></div>
+    <button id="addOperator" class="secondary">+ Operator</button>
+    <a href="index2.html" class="secondary button">Back</a>
+  </div>
+
+  <div class="controls">
+    <button id="addTrial" class="secondary">+ Trial</button>
+    <button id="addSite" class="secondary">+ Site</button>
+    <span class="muted small">Click any Trial or Site name to rename. You can remove items with the small “×”.</span>
+  </div>
+
+  <div id="tableWrap"></div>
+
+  <div class="footer">
+    <button id="saveState" class="primary">Save</button>
+    <button id="exportJson" class="secondary">Export JSON</button>
+    <input id="importJson" type="file" accept="application/json" />
+    <span class="muted small">Changes are also kept in sessionStorage. Please do not enter internal/confidential data.</span>
+  </div>
+
+  <script>
+    const tabsEl = document.getElementById('tabs');
+    const tableWrap = document.getElementById('tableWrap');
+
+    const addOperatorBtn = document.getElementById('addOperator');
+    const addTrialBtn = document.getElementById('addTrial');
+    const addSiteBtn = document.getElementById('addSite');
+
+    const saveBtn = document.getElementById('saveState');
+    const exportBtn = document.getElementById('exportJson');
+    const importInput = document.getElementById('importJson');
+
+    let model = loadModel();
+    let activeOp = 0;
+
+    function loadModel() {
+      const raw = sessionStorage.getItem('tableSpec');
+      if (!raw) {
+        alert('No table specification found. Returning to generator.');
+        window.location.href = 'index.html';
+        return { operators: [{ name: 'Operator 1' }], trials: ['Trial 1'], sites: ['Site 1'] };
+      }
+      let base = JSON.parse(raw);
+      // Ensure minimums
+      if (!base.operators?.length) base.operators = [{ name: 'Operator 1' }];
+      if (!base.trials?.length) base.trials = ['Trial 1'];
+      if (!base.sites?.length) base.sites = ['Site 1'];
+      return base;
+    }
+
+    function saveModel() {
+      sessionStorage.setItem('tableSpec', JSON.stringify(model));
+    }
+
+    function render() {
+      renderTabs();
+      renderTable();
+      saveModel();
+    }
+
+    function renderTabs() {
+      tabsEl.innerHTML = '';
+      model.operators.forEach((op, idx) => {
+        const tab = document.createElement('div');
+        tab.className = 'tab' + (idx === activeOp ? ' active' : '');
+        // Tab label (click to rename)
+        const span = document.createElement('span');
+        span.textContent = op.name || `Operator ${idx + 1}`;
+        span.title = 'Click to rename operator';
+        span.addEventListener('click', () => inlineRename(span, (name) => {
+          model.operators[idx].name = name || `Operator ${idx + 1}`;
+          renderTabs();
+          saveModel();
+        }, op.name));
+        tab.appendChild(span);
+
+        // Remove if more than 1 operator
+        if (model.operators.length > 1) {
+          const close = document.createElement('span');
+          close.className = 'close';
+          close.textContent = '×';
+          close.title = 'Remove operator';
+          close.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (model.operators.length <= 1) return;
+            if (!confirm(`Remove operator "${op.name || `Operator ${idx + 1}`}"?`)) return;
+            model.operators.splice(idx, 1);
+            if (activeOp >= model.operators.length) activeOp = model.operators.length - 1;
+            render();
+          });
+          tab.appendChild(close);
+        }
+
+        tab.addEventListener('click', () => { activeOp = idx; renderTabs(); renderTable(); });
+        tabsEl.appendChild(tab);
+      });
+    }
+
+    function renderTable() {
+      const trials = model.trials;
+      const sites = model.sites;
+
+      const table = document.createElement('table');
+
+      // THEAD (Trials)
+      const thead = document.createElement('thead');
+      const headRow = document.createElement('tr');
+
+      // Corner (empty)
+      const corner = document.createElement('th');
+      corner.textContent = model.operators[activeOp]?.name || `Operator ${activeOp + 1}`;
+      corner.title = 'Operator label';
+      headRow.appendChild(corner);
+
+      trials.forEach((t, idx) => {
+        const th = document.createElement('th');
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'name';
+        nameSpan.textContent = t;
+        nameSpan.title = 'Click to rename trial';
+        nameSpan.addEventListener('click', () => inlineRename(nameSpan, (val) => {
+          model.trials[idx] = val || `Trial ${idx + 1}`;
+          renderTable();
+          saveModel();
+        }, t));
+        th.appendChild(nameSpan);
+
+        // Remove control (only if >1 trials)
+        if (trials.length > 1) {
+          const actions = document.createElement('span');
+          actions.className = 'actions';
+          const del = document.createElement('button');
+          del.className = 'secondary danger';
+          del.type = 'button';
+          del.title = 'Remove this trial';
+          del.textContent = '×';
+          del.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (model.trials.length <= 1) return;
+            model.trials.splice(idx, 1);
+            renderTable();
+            saveModel();
+          });
+          actions.appendChild(del);
+          th.appendChild(actions);
+        }
+
+        thead.appendChild(th);
+      });
+      table.appendChild(thead);
+
+      // TBODY (Sites)
+      const tbody = document.createElement('tbody');
+      sites.forEach((s, rIdx) => {
+        const tr = document.createElement('tr');
+
+        // Row header: site name + remove
+        const rowHead = document.createElement('th');
+        rowHead.setAttribute('scope', 'row');
+
+        const siteName = document.createElement('span');
+        siteName.className = 'name';
+        siteName.textContent = s;
+        siteName.title = 'Click to rename site';
+        siteName.addEventListener('click', () => inlineRename(siteName, (val) => {
+          model.sites[rIdx] = val || `Site ${rIdx + 1}`;
+          renderTable();
+          saveModel();
+        }, s));
+        rowHead.appendChild(siteName);
+
+        if (sites.length > 1) {
+          const actions = document.createElement('span');
+          actions.className = 'actions';
+          const del = document.createElement('button');
+          del.className = 'secondary danger';
+          del.type = 'button';
+          del.title = 'Remove this site';
+          del.textContent = '×';
+          del.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (model.sites.length <= 1) return;
+            model.sites.splice(rIdx, 1);
+            renderTable();
+            saveModel();
+          });
+          actions.appendChild(del);
+          rowHead.appendChild(actions);
+        }
+
+        tr.appendChild(rowHead);
+
+        // Data cells (empty/editable if you want later)
+        for (let c = 0; c < trials.length; c++) {
+          const td = document.createElement('td');
+          td.textContent = ''; // Placeholder; add per-cell editing later if needed
+          tr.appendChild(td);
+        }
+
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+
+      // Controls bar under table
+      const panel = document.createElement('div');
+      panel.className = 'panel';
+      const ctrl = document.createElement('div');
+      ctrl.className = 'row';
+      const info = document.createElement('span');
+      info.className = 'muted small';
+      info.textContent = `Operators: ${model.operators.length} • Trials: ${model.trials.length} • Sites: ${model.sites.length}`;
+      ctrl.appendChild(info);
+      panel.appendChild(ctrl);
+
+      tableWrap.innerHTML = '';
+      tableWrap.appendChild(table);
+      tableWrap.appendChild(panel);
+    }
+
+    // Inline rename helper
+    function inlineRename(node, onDone, initial) {
+      const current = (typeof initial === 'string' ? initial : node.textContent).trim();
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = current;
+      input.className = 'inline-edit';
+      node.replaceWith(input);
+      input.focus();
+      input.select();
+
+      const finish = (commit = true) => {
+        const newVal = commit ? (input.value.trim() || current) : current;
+        const span = document.createElement('span');
+        span.className = 'name';
+        span.textContent = newVal;
+        span.addEventListener('click', () => inlineRename(span, onDone, newVal));
+        input.replaceWith(span);
+        onDone(newVal);
+      };
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') finish(true);
+        if (e.key === 'Escape') finish(false);
+      });
+      input.addEventListener('blur', () => finish(true));
+    }
+
+    // Top-level controls
+    addOperatorBtn.addEventListener('click', () => {
+      const idx = model.operators.length + 1;
+      model.operators.push({ name: `Operator ${idx}` });
+      activeOp = model.operators.length - 1;
+      render();
+    });
+
+    addTrialBtn.addEventListener('click', () => {
+      const idx = model.trials.length + 1;
+      model.trials.push(`Trial ${idx}`);
+      render();
+    });
+
+    addSiteBtn.addEventListener('click', () => {
+      const idx = model.sites.length + 1;
+      model.sites.push(`Site ${idx}`);
+      render();
+    });
+
+    saveBtn.addEventListener('click', () => {
+      saveModel();
+      alert('Saved to sessionStorage.');
+    });
+
+    exportBtn.addEventListener('click', () => {
+      const data = JSON.stringify(model, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'table-spec.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    importInput.addEventListener('change', async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const data = JSON.parse(text);
+        // Minimal validation
+        if (!Array.isArray(data.operators) || !Array.isArray(data.trials) || !Array.isArray(data.sites)) {
+          alert('Invalid JSON format. Expect { operators:[], trials:[], sites:[] }');
+          return;
+        }
+        if (!data.operators.length || !data.trials.length || !data.sites.length) {
+          alert('Operators, Trials, and Sites must all be at least 1.');
+          return;
+        }
+        model = data;
+        activeOp = Math.min(activeOp, model.operators.length - 1);
+        render();
+      } catch (err) {
+        alert('Failed to parse JSON.');
+      } finally {
+        importInput.value = '';
+      }
+    });
+
+    // Initial render
+    render();
+  </script>
+</body>
+</html>

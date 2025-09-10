@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MainPage2</title>
+    <link href='https://fonts.googleapis.com/css?family=Kaushan Script' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Junge' rel='stylesheet'>
+    <style>
+        body {
+            font-family: Arial, sans-serif; /* Sets default font for the body*/
+            margin: 0; /* removes default margin*/
+            padding: 0; /* removes default padding*/
+            background-color: #ffffff; /* sets background to white*/
+        }
+        
+        .header {
+            width: 100%;
+            height: 120px;
+            left: 0;
+            top: 0;
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+            box-sizing: border-box;
+            border: 1px solid rgb(255, 255, 255);
+            border-radius: 0px 0px 50px 50px;
+            box-shadow: 0px 4px 40px 0px rgba(0, 0, 0, 0.25);
+            background: rgb(196, 196, 196);
+        }
+        
+        .logo img {
+            width: 250px;
+            height: 185px;
+        }
+        
+        .tool-name {
+            position: static;
+            color: rgb(0, 0, 0);
+            font-family: Kaushan Script;
+            font-size: 50px;
+            font-weight: 400;
+            line-height: 73px;
+            letter-spacing: 0px;
+	    flex-grow: 1;
+        }
+        
+        .nav-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 600px;
+            height: 50px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgb(0, 0, 0);
+            padding: 0px;
+            border: 1px solid rgb(0, 0, 0);
+            opacity: 1;
+            box-shadow: none;
+        }
+        
+        .nav-button {
+            color: white;
+            font-family: Junge;
+            font-size: 20px;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            flex-direction: row;
+            text-align: center;
+        }
+        
+        .nav-button:hover {
+            opacity: 0.5;
+        }
+        
+        .main-container {
+            display: flex;
+            margin-top: 50px;
+            padding: 40px;
+        }
+        
+        .main-square {
+            width: 400px;
+            height: 700px;
+            background-color: #c4c4c4;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            position: relative; /* Added for positioning the draft button */
+        }
+        
+        .fields-container {
+            display: flex;
+            gap: 5px;
+            margin: 25px;
+        }
+                
+        .dropdown-container, .input-container {
+            width: 270px;
+            height: 70px;
+            margin: 7px;
+        }
+        
+        select, input {
+            width: 250px;
+            height: 45px;
+            padding: 5px;
+            border: 5px solid #000;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+	/*Table css*/
+   table {
+      width: 100%;
+      height:200px;
+      border-collapse: collapse;
+      margin: 15px;
+      font-family: Arial, sans-serif;
+      table-layout: fixed;
+    }
+
+   .table-container {
+      display: table-group-row;
+	padding:5px;
+	height:300px;
+	width:400px;
+	margin:10px;
+    }
+
+
+    th {
+      border: 5px solid #000;
+      padding: 10px;
+      text-align: center;
+      background-color: #fff;
+      /* Flex column layout */
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      vertical-align: top;
+	width:300px;
+    }
+
+    .header-text {
+      font-weight: bold;
+      margin: 8px;
+padding:10px;
+text-align: center;
+    }
+
+    input[type="number"] {
+      width: 20%;
+      padding: 5px;
+      font-size: 1rem;
+      border: 2px solid #000;
+      border-radius: 4px;
+      box-sizing: border-box;
+      text-align: center;
+      margin: 8px;
+
+
+      /* Remove spinners in Firefox */
+      -moz-appearance: textfield;
+
+    }
+    /* Remove spinners in Chrome, Safari, Edge, Opera */
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+
+
+    input[type="number"]:focus {
+      border-color: #4a90e2;
+      outline: none;
+      box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      width: 30%;
+padding: 5px;
+margin: 5px;
+    }
+
+    button {
+      flex: 1;
+      padding: 6px 0;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: 1px solid #000;
+      background-color: white;
+      color: #000;
+      border-radius: 4px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    button:hover {
+      background-color: #4a90e2;
+      color: white;
+    }
+
+    button:active {
+      background-color: #357ABD;
+      border-color: #357ABD;
+    }
+
+
+	.draw-button {
+	    width: 25%;
+ 	    color: white;
+    background-color: black;
+    font-family: 'Junge';
+	margin:15px;
+	display: block;
+	}
+
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <img src="https://wuest-technology.com/wp-content/uploads/2023/08/infineon_logo_webseite.png" alt="ifx company logo" />
+        </div>
+        <div class="tool-name">METROLOGY TOOLS</div>
+    </div>
+    
+    <div class="nav-bar">
+        <div class="nav-button">DATA</div>
+        <div class="nav-button">APPROVAL LOOP</div>
+        <div class="nav-button">STATISTICS</div>
+        <div class="nav-button">SEARCH</div>
+    </div>
+    
+
+    <div class="main-container">
+        <div class="main-square">
+            <div class="fields-container">
+                               
+                
+<div class="table-container">
+<table>
+    <tbody>
+      <tr>
+        <th>
+          <div class="header-text">Operators</div>
+          <input type="number" />
+          <div class="button-group">
+            <button type="button" class="decrement">−</button>
+            <button type="button" class="increment">+</button>
+          </div>
+        </th>
+        <th>
+          <div class="header-text">Trials</div>
+          <input type="number"  />
+          <div class="button-group">
+            <button type="button" class="decrement">−</button>
+            <button type="button" class="increment">+</button>
+          </div>
+        </th>
+        <th>
+          <div class="header-text">Sites</div>
+          <input type="number"  />
+          <div class="button-group">
+            <button type="button" class="decrement">−</button>
+            <button type="button" class="increment">+</button>
+           </div>
+        </th>
+      </tr> 
+    </tbody>
+  </table>
+           <button class="draw-button">Draw</button> 
+</div>
+
+        </div>
+    </div>
+    
+    <script>
+        // Simple navigation functionality
+        document.querySelectorAll('.nav-button').forEach(button => {
+            button.addEventListener('click', function() {
+                alert('Navigating to: ' + this.textContent);
+            });
+        });
+        
+        // Next button functionality
+        document.querySelector('.next-button').addEventListener('click', function() {
+            alert('Navigate to other pages');
+        });
+
+
+	//+ button functionality
+ 	const input = document.getElementById('numberInput');
+	const incrementBtn = document.querySelectorAll('button.increment');
+    	const decrementBtn = document.querySelectorAll('button.decrement');
+incrementBtn.addEventListener('click', () => {
+    input.value = Number(input.value) + 1;
+  });
+  decrementBtn.addEventListener('click', () => {
+    input.value = Number(input.value) - 1;
+  });
+
+
+// Draw button functionality
+        document.querySelector('.draw-button').addEventListener('click', function() {
+            alert('Grid drew successfully');
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Rendered Table</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: sans-serif; margin: 2rem; }
+    #app { margin-top: 1rem; }
+    table { border-collapse: collapse; width: 100%; max-width: 900px; }
+    caption { caption-side: top; font-weight: bold; padding: 0.5rem; }
+    th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; }
+    thead th { background: #f7f7f7; }
+    .error { background: #fee; border: 1px solid #f99; padding: 1rem; margin: 1rem 0; }
+    a.button { display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; border: 1px solid #444; text-decoration: none; border-radius: 4px; }
+  </style>
+</head>
+
+
+<body>
+  <h1>Your Generated Table</h1>
+  <div id="app"></div>
+  <p><a href="index.html" class="button">Back to Generator</a></p>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const app = document.getElementById('app');
+      const params = new URLSearchParams(window.location.search);
+
+      // Parse and validate parameters
+      const rows = clamp(parseInt(params.get('rows'), 10), 1, 100);
+      const cols = clamp(parseInt(params.get('cols'), 10), 1, 50);
+      const caption = (params.get('caption') || '').trim().slice(0, 100);
+      const headerParam = params.get('header'); // "on" when checked via form
+      const includeHeader = headerParam === 'on' || headerParam === '1' || headerParam === 'true';
+      const fill = ['empty', 'coordinates', 'sequence'].includes(params.get('fill')) ? params.get('fill') : 'empty';
+
+      if (!rows || !cols) {
+        renderError('Missing or invalid rows/columns. Please go back and try again.');
+        return;
+      }
+
+      // Build table
+      const table = document.createElement('table');
+
+      if (caption) {
+        const cap = document.createElement('caption');
+        cap.textContent = caption;
+        table.appendChild(cap);
+      }
+
+      if (includeHeader) {
+        const thead = document.createElement('thead');
+        const tr = document.createElement('tr');
+        for (let c = 1; c <= cols; c++) {
+          const th = document.createElement('th');
+          th.textContent = `Col ${c}`;
+          tr.appendChild(th);
+        }
+        thead.appendChild(tr);
+        table.appendChild(thead);
+      }
+
+      const tbody = document.createElement('tbody');
+      let counter = 1;
+      const startRow = includeHeader ? 2 : 1; // For "coordinates" mode, header row is not counted as data
+      for (let r = 1; r <= rows; r++) {
+        const tr = document.createElement('tr');
+        for (let c = 1; c <= cols; c++) {
+          const cell = includeHeader && r === 1 ? document.createElement('th') : document.createElement('td');
+          cell.textContent = getCellValue(fill, r, c, counter, includeHeader);
+          tr.appendChild(cell);
+          counter++;
+        }
+        tbody.appendChild(tr);
+      }
+      table.appendChild(tbody);
+
+      app.innerHTML = '';
+      app.appendChild(table);
+
+      function clamp(n, min, max) {
+        if (Number.isNaN(n)) return null;
+        return Math.max(min, Math.min(max, n));
+      }
+
+      function renderError(message) {
+        const div = document.createElement('div');
+        div.className = 'error';
+        div.textContent = message;
+        app.innerHTML = '';
+        app.appendChild(div);
+      }
+
+      function getCellValue(mode, r, c, count, hasHeader) {
+        switch (mode) {
+          case 'coordinates':
+            return `r${r},c${c}`;
+          case 'sequence':
+            return String(count);
+          case 'empty':
+          default:
+            return '';
+        }
+      }
+    });
+  </script>
+</body>
+</html>
