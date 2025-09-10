@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Table Generator (Operators/Trials/Sites)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { --gap: 0.75rem; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 2rem; }
+    h1 { margin-top: 0; }
+    .grid { display: grid; gap: var(--gap); }
+    .row { display: flex; gap: var(--gap); flex-wrap: wrap; align-items: center; }
+    .card { border: 1px solid #ddd; border-radius: 8px; padding: 1rem; }
+    label { font-weight: 600; }
+    input[type="number"], input[type="text"] { padding: 0.5rem; }
+    ul { list-style: none; padding: 0; margin: 0.5rem 0 0; }
+    li { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+    li input[type="text"] { flex: 1; }
+    button { padding: 0.5rem 0.9rem; cursor: pointer; }
+    .primary { background: #0b5; color: white; border: 1px solid #0a4; border-radius: 6px; }
+    .secondary { background: #eee; border: 1px solid #ccc; border-radius: 6px; }
+    .hint { color: #666; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <h1>Table Generator</h1>
+  <p class="hint">This creates a table with Sites as rows and Trials as columns, grouped by Operators. Please do not enter internal/confidential data.</p>
+
+  <div class="grid">
+    <div class="card">
+      <div class="row">
+        <div>
+          <label for="opCount">Operators</label><br />
+          <input id="opCount" type="number" min="1" value="2" />
+        </div>
+        <div>
+          <label for="trialCount">Trials (columns)</label><br />
+          <input id="trialCount" type="number" min="1" value="3" />
+        </div>
+        <div>
+          <label for="siteCount">Sites (rows)</label><br />
+          <input id="siteCount" type="number" min="1" value="4" />
+        </div>
+        <div style="margin-left:auto">
+          <button id="resetNames" type="button" class="secondary">Regenerate Names</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <button id="drawBtn" class="primary" type="button">Draw</button>
+    </div>
+    <p class="hint">Tip: You can rename items here or later on the table page.</p>
+  </div>
+
+  <script>
+    // Utility to (re)build lists based on count and optional existing names
+
+    function ensureList(listEl, count, prefix, existing = []) {
+      const current = Array.from(listEl.querySelectorAll('input[type="text"]')).map(i => i.value.trim());
+
+      // Prefer existing, then current, else auto name
+      const values = [];
+      for (let i = 0; i < count; i++) {
+        let v = (existing[i] ?? current[i] ?? `${prefix} ${i + 1}`).trim();
+        if (!v) v = `${prefix} ${i + 1}`;
+        values.push(v);
+      }
+      listEl.innerHTML = '';
+      values.forEach((val, idx) => {
+        const li = document.createElement('li');
+        const inp = document.createElement('input');
+        inp.type = 'text';
+        inp.value = val;
+        inp.setAttribute('aria-label', `${prefix} ${idx + 1}`);
+        li.appendChild(inp);
+        listEl.appendChild(li);
+      });
+    }
+
+    const opCount = document.getElementById('opCount');
+    const trialCount = document.getElementById('trialCount');
+    const siteCount = document.getElementById('siteCount');
+    const opList = document.getElementById('opList');
+    const trialList = document.getElementById('trialList');
+    const siteList = document.getElementById('siteList');
+    const resetNames = document.getElementById('resetNames');
+    const drawBtn = document.getElementById('drawBtn');
+
+    function clampMin1(n) { n = parseInt(n, 10); return Number.isFinite(n) && n >= 1 ? n : 1; }
+
+    function refreshLists({ regenerate = false } = {}) {
+      const ops = clampMin1(opCount.value);
+      const trs = clampMin1(trialCount.value);
+      const sts = clampMin1(siteCount.value);
+
+      const opNames = regenerate ? [] : Array.from(opList.querySelectorAll('input')).map(i => i.value);
+      const trialNames = regenerate ? [] : Array.from(trialList.querySelectorAll('input')).map(i => i.value);
+      const siteNames = regenerate ? [] : Array.from(siteList.querySelectorAll('input')).map(i => i.value);
+
+      ensureList(opList, ops, 'Operator', opNames);
+      ensureList(trialList, trs, 'Trial', trialNames);
+      ensureList(siteList, sts, 'Site', siteNames);
+    }
+
+    // Initialize
+    refreshLists();
+
+    // React to count changes (enforce min=1)
+    [opCount, trialCount, siteCount].forEach(inp => {
+      inp.addEventListener('change', () => {
+        inp.value = clampMin1(inp.value);
+        refreshLists();
+      });
+    });
+
+    resetNames.addEventListener('click', () => refreshLists({ regenerate: true }));
+
+    drawBtn.addEventListener('click', () => {
+      const spec = {
+        operators: Array.from(opList.querySelectorAll('input')).map(i => ({ name: i.value.trim() || 'Operator' })),
+        trials: Array.from(trialList.querySelectorAll('input')).map(i => i.value.trim()).filter(Boolean),
+        sites: Array.from(siteList.querySelectorAll('input')).map(i => i.value.trim()).filter(Boolean)
+      };
+      // Guard: none can be 0
+      if (!spec.operators.length || !spec.trials.length || !spec.sites.length) {
+        alert('Operators, Trials, and Sites must all be at least 1.');
+        return;
+      }
+      sessionStorage.setItem('tableSpec', JSON.stringify(spec));
+      window.location.href = 'table2.html';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Table Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: sans-serif; margin: 2rem; }
+    form { display: grid; gap: 1rem; max-width: 400px; }
+    label { display: grid; gap: 0.25rem; }
+    .row { display: flex; gap: 1rem; }
+    button { padding: 0.6rem 1rem; }
+    small { color: #666; }
+  </style>
+</head>
+
+
+<body>
+  <h1>Table Generator</h1>
+  <p>Enter table details and click Draw. You will be redirected to a page that renders your table. Please do not enter internal/confidential data.</p>
+
+  <form action="table.html" method="get">
+    <div class="row">
+      <label>
+        Rows
+        <input type="number" name="rows" min="1" max="100" value="4" required />
+      </label>
+      <label>
+        Columns
+        <input type="number" name="cols" min="1" max="50" value="4" required />
+      </label>
+    </div>
+
+    <label>
+      Caption (optional)
+      <input type="text" name="caption" maxlength="100" placeholder="e.g., Quarterly Report" />
+    </label>
+
+    <label>
+      <input type="checkbox" name="header" />
+      Include header row
+    </label>
+
+    <label>
+      Pre-fill cells
+      <select name="fill">
+        <option value="empty">Empty</option>
+        <option value="coordinates">Coordinates (r,c)</option>
+        <option value="sequence">Sequential numbers</option>
+      </select>
+    </label>
+
+    <button type="submit">Draw</button>
+  </form>
+
+  <p><small>Tip: Rows capped at 100 and columns at 50 to prevent rendering issues.</small></p>
+</body>
+
+</html>

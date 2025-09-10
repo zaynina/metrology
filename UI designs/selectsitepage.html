@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SelectSitePage</title>
+  <link href='https://fonts.googleapis.com/css?family=Kaushan Script' rel='stylesheet'>
+  <link href='https://fonts.googleapis.com/css?family=Junge' rel='stylesheet'>
+  <style>
+
+    /* Header */
+
+    body {
+      font-family: Arial, sans-serif; /* default font for the body*/
+      color: black;
+      margin: 0; 
+      padding: 0; 
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      width: 100%;
+      height: 120px;
+      left: 0;
+      top: 0;
+      display: flex;
+      align-items: center;
+      padding: 5px 10px;
+      box-sizing: border-box;
+      border: 1px solid rgb(255, 255, 255);
+      border-radius: 0px 0px 50px 50px;
+      box-shadow: 0px 4px 40px 0px rgba(0, 0, 0, 0.25);
+      background: rgb(196, 196, 196);
+    }
+
+    .logo img {
+      width: 250px;
+      height: 185px;
+    }
+        
+    .tool-name {
+      position: static;
+      color: rgb(0, 0, 0);
+      font-family: Kaushan Script;
+      font-size: 50px;
+      font-weight: 400;
+      line-height: 73px;
+      letter-spacing: 0px;
+      flex-grow: 1;
+    }
+        
+    .nav-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 600px;
+      height: 50px;
+      position: static;
+      margin: 0 auto;
+      background: rgb(0, 0, 0);
+      padding: 0px;
+      border: 1px solid rgb(0, 0, 0);
+      opacity: 1;
+      box-shadow: none;
+    }
+        
+    .nav-button {
+      color: white;
+      font-family: Junge;
+      font-size: 20px;
+      padding: 10px 15px;
+      margin: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      flex-direction: row;
+      text-align: center;
+      user-select: none;
+    }
+        
+    .nav-button:hover {
+      opacity: 0.5;
+    }
+
+    /* Main content area */
+    main {
+      flex-grow: 1;
+      background-color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      font-family: Georgia, serif;
+      user-select: none;
+    }
+
+    .form-row {
+      display: flex;
+      align-items: center;
+      gap: 20px; /* space between select box and button */
+      justify-content: center; /* center horizontally */
+      width: 100%;
+      max-width: 700px; /* optional max width */
+      margin: 0 auto; /* center container */
+    }
+
+    .select-site-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 2px solid #000;
+      padding: 5px 8px;
+      background-color: black;
+      border-radius: 10px;
+      box-shadow: none;
+      width: 450px;
+    }
+
+    label {
+      color: white;
+      font-size: 30px;
+      user-select: text;
+      padding-left: 10px;
+      font-family: 'Times New Roman', serif;
+      width: inherit;
+      text-align: center;
+    }
+
+    select {
+      font-size: 25px;
+      height: 50px;
+      background-color: #ccc;
+      border: none;
+      padding: 0 8px;
+      margin: 5px;
+      font-family: 'Times New Roman', serif;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      cursor: pointer;
+      outline-offset: -2px;
+      user-select: text;
+      position: relative;
+      width: -webkit-fill-available;
+    }
+
+    button {
+      height: 50px;
+      width: 150px; /* smaller width to fit nicely next to select */
+      margin: 0; /* remove default margin */
+      padding: 0 15px;
+      font-size: 30px;
+      background-color: #bdbdbd;
+      border: 1px solid #888;
+      cursor: pointer;
+      font-family: 'Times New Roman', serif;
+      transition: background-color 0.25s ease;
+      user-select: none;
+      border-radius: 10px;
+    }
+
+    button:hover,
+    button:focus {
+      background-color: #a6a6a6;
+      outline: none;
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding: 10px 20px;
+      }
+
+      .select-site-container label,
+      select,
+      button {
+        font-size: 14px;
+      }
+
+      button {
+        padding: 0 10px;
+        width: 100px;
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 10px;
+        max-width: 300px;
+      }
+
+      .select-site-container {
+        width: 100%;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">
+      <img src="https://wuest-technology.com/wp-content/uploads/2023/08/infineon_logo_webseite.png" alt="ifx company logo" />
+    </div>
+    <div class="tool-name">METROLOGY TOOLS</div>
+  </div>
+  
+  <div class="nav-bar">
+    <div class="nav-button">DATA</div>
+    <div class="nav-button">APPROVAL LOOP</div>
+    <div class="nav-button">STATISTICS</div>
+    <div class="nav-button">SEARCH</div>
+  </div>
+
+  <main>
+    <form id="siteForm" aria-label="Site selection form">
+      <div class="form-row">
+        <div class="select-site-container">
+          <label for="siteSelect">Select Site</label>
+          <select id="siteSelect" name="siteSelect" aria-required="true">
+            <option value=""> </option>
+            <option value="site1">19c Test</option>
+            <option value="site2">Wuxi</option>
+            <option value="site3">Melaka</option>
+          </select>
+        </div>
+        <button type="submit">Connect</button>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    // Example JS for form submission and basic validation
+    document.getElementById('siteForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const siteSelect = document.getElementById('siteSelect');
+      if (!siteSelect.value) {
+        alert('Please select a site before connecting.');
+        siteSelect.focus();
+        return;
+      }
+      alert('Connecting to ' + siteSelect.options[siteSelect.selectedIndex].text + '...');
+      // Here would be logic to connect or perform your function
+    });
+  </script>
+</body>
+</html>
